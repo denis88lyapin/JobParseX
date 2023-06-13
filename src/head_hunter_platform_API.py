@@ -72,7 +72,7 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                     'candidat': vacancy['snippet']['requirement'],
                     'vacancyRichText': vacancy['snippet']['responsibility'],
                     'date_published': formatted_date,
-                    'payment': [salary_from, salary_to]
+                    'payment': {'from': salary_from, 'to': salary_to}
                 }
                 vacancies.append(processed_vacancy)
         return vacancies
@@ -82,4 +82,4 @@ if __name__ == "__main__":
     a = HeadHunterPlatformAPI()
     vacancies = a.get_vacancies(key_word='бухгалтер 100000 Москва')
     print(len(vacancies))
-    # print(json.dumps(vacancies, indent=2, ensure_ascii=False))
+    print(json.dumps(vacancies, indent=2, ensure_ascii=False))
