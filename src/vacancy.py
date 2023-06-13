@@ -42,26 +42,34 @@ class Vacancy:
             При условии, что "от" равно 0 или "до" равно 0, то сравнивается значение не равное 0.
             При условии, что "от" и "до" равны 0, то сравнивается 0.
             """
-            payment_from_1 = int(self.payment.get("from", 0))
-            payment_to_1 = int(self.payment.get('to', 0))
-            payment_from_2 = int(other.payment.get("from", 0))
-            payment_to_2 = int(other.payment.get('to', 0))
-
-            if payment_to_1 > 0 and payment_from_1 > 0:
-                payment_1 = (payment_to_1 + payment_from_1) / 2
-            elif payment_from_1 == 0:
-                payment_1 = payment_to_1
-            else:
-                payment_1 = payment_from_1
-
-            if payment_to_2 > 0 and payment_from_2 > 0:
-                payment_2 = (payment_to_2 + payment_from_2) / 2
-            elif payment_from_2 == 0:
-                payment_2 = payment_to_2
-            else:
-                payment_2 = payment_from_2
+            payment_1 = self.get_payment()
+            payment_2 = other.get_payment()
 
             return payment_1 < payment_2
+
+    def get_payment(self):
+        """
+        Функция возвращает зарплату.
+        При условии, что зарплата "от" и "до" больше 0, присваивается среднее значение.
+        При условии, что "от" равно 0 или "до" равно 0, то присваивается значение не равное 0.
+        При условии, что "от" и "до" равны 0, то присваивается 0.
+        :return:
+        """
+        payment_from = int(self.payment.get("from", 0))
+        payment_to = int(self.payment.get('to', 0))
+        if payment_to > 0 and payment_from > 0:
+            payment = (payment_to + payment_from) / 2
+        elif payment_from == 0:
+            payment = payment_to
+        else:
+            payment = payment_from
+        return payment
+
+    def sort_vacancy_payment(self):
+        for vacancy in Vacancy.all:
+            pass
+
+
 
 
 
