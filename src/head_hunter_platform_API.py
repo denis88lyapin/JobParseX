@@ -4,14 +4,25 @@ from datetime import datetime
 from src.job_platform_API import JobPlatformAPI
 import requests
 
+
 class HeadHunterPlatformAPI(JobPlatformAPI):
-    base_url = "https://api.hh.ru/vacancies"
+    """
+    Класс для работы с API SuperJob.
+    """
+    def __init__(self):
+        self.base_url = "https://api.hh.ru/vacancies"
 
     def get_vacancies(self, key_word=''):
+        """
+        Функция возвращает вакансии по параметрам поиска.
+        :param key_word:
+        :return: vacancies
+        """
         all_vacancies = []
         page = 0
         per_page = 100  # Количество вакансий на каждой странице
         total_pages = 1
+        filtered_vacancies = []
 
         while page < total_pages:
             params = {
@@ -28,15 +39,27 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
-                return []
-        processed_vacancies = []
-        for vacancy in all_vacancies:
+                return None
+
+            filtered_vacancies = self.__filtre_vacancy(all_vacancies)
+        return filtered_vacancies
+
+    @staticmethod
+    def __filtre_vacancy(vacancy_data: list) -> list:
+        """
+        Функция извлекает и конвертирует данные о вакансиях.
+        :param vacancy_data:
+        :return: vacancy
+        """
+
+        vacancies = []
+        for vacancy in vacancy_data:
             if vacancy['type']['id'] == 'open':
                 address = vacancy['address']
                 address_raw = address['raw'] if address else ""
                 salary = vacancy['salary']
-                salary_from = salary['from'] if salary else None
-                salary_to = salary['to'] if salary else None
+                salary_from = salary['from'] if salary else 0
+                salary_to = salary['to'] if salary else 0
                 datetime_obj = datetime.strptime(vacancy['published_at'], "%Y-%m-%dT%H:%M:%S%z")
                 formatted_date = datetime_obj.strftime("%Y.%m.%d %H:%M:%S")
                 processed_vacancy = {
@@ -51,13 +74,12 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                     'date_published': formatted_date,
                     'payment': [salary_from, salary_to]
                 }
-                processed_vacancies.append(processed_vacancy)
-
-        return processed_vacancies
+                vacancies.append(processed_vacancy)
+        return vacancies
 
 
 if __name__ == "__main__":
     a = HeadHunterPlatformAPI()
-    vacancies = a.get_vacancies(key_word='бухгалтер')
+    vacancies = a.get_vacancies(key_word='бухгалтер 100000 Москва')
     print(len(vacancies))
-    print(json.dumps(vacancies, indent=2, ensure_ascii=False))
+    # print(json.dumps(vacancies, indent=2, ensure_ascii=False))
