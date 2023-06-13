@@ -71,7 +71,7 @@ class SuperJobPlatformAPI(JobPlatformAPI):
                     'candidat': vacancy['candidat'],
                     'vacancyRichText': vacancy['vacancyRichText'],
                     'date_published': formatted_date,
-                    'payment': [vacancy['payment_from'], vacancy['payment_to']]
+                    'payment': {'from': vacancy['payment_from'], 'to': vacancy['payment_to']}
                 }
                 vacancies.append(processed_vacancy)
         return vacancies
@@ -79,7 +79,7 @@ class SuperJobPlatformAPI(JobPlatformAPI):
 
 if __name__ == "__main__":
     a = SuperJobPlatformAPI()
-    b = a.get_vacancies(key_word='python')
-    print(len(b))
+    # b = a.get_vacancies(key_word='python')
+    # print(len(b))
     # print(json.dumps(b, indent=2, ensure_ascii=False))
-    # print(json.dumps(a.get_vacancies(key_word='python 100000 Москва'), indent=2, ensure_ascii=False))
+    print(json.dumps(a.get_vacancies(key_word='python 100000 Москва'), indent=2, ensure_ascii=False))
