@@ -64,6 +64,7 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 formatted_date = datetime_obj.strftime("%Y.%m.%d %H:%M:%S")
                 processed_vacancy = {
                     'platform': "HeadHunter",
+                    'id': vacancy["id"],
                     'title': vacancy['name'],
                     'company': vacancy['employer']['name'],
                     'url': vacancy['alternate_url'],

@@ -63,6 +63,7 @@ class SuperJobPlatformAPI(JobPlatformAPI):
                 formatted_date = datetime_obj.strftime("%Y.%m.%d %H:%M:%S")
                 processed_vacancy = {
                     'platform': "SuperJob",
+                    "id": vacancy["id"],
                     'title': vacancy['profession'],
                     'company': vacancy['firm_name'],
                     'url': vacancy['link'],
