@@ -1,7 +1,6 @@
-import json
 from datetime import datetime
 
-from src.job_platform_API import JobPlatformAPI
+from src.api.job_platform_API import JobPlatformAPI
 import requests
 
 
@@ -41,11 +40,11 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
                 return None
 
-            filtered_vacancies = self.__filtre_vacancy(all_vacancies)
+            filtered_vacancies = self.__filter_vacancy(all_vacancies)
         return filtered_vacancies
 
     @staticmethod
-    def __filtre_vacancy(vacancy_data: list) -> list:
+    def __filter_vacancy(vacancy_data: list) -> list:
         """
         Функция извлекает и конвертирует данные о вакансиях.
         :param vacancy_data:
@@ -79,8 +78,8 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         return vacancies
 
 
-if __name__ == "__main__":
-    a = HeadHunterPlatformAPI()
-    vacancies = a.get_vacancies(key_word='бухгалтер 100000 Москва')
-    print(len(vacancies))
-    print(json.dumps(vacancies, indent=2, ensure_ascii=False))
+# if __name__ == "__main__":
+#     a = HeadHunterPlatformAPI()
+#     vacancies = a.get_vacancies(key_word='бухгалтер 100000 Москва')
+#     print(len(vacancies))
+#     print(json.dumps(vacancies, indent=2, ensure_ascii=False))
