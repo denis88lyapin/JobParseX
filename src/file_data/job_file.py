@@ -8,7 +8,7 @@ class JobFile(ABC):
         pass
 
     @abstractmethod
-    def get_vacancy(self, search_query):
+    def get_vacancies(self, search_query):
         pass
 
     @abstractmethod

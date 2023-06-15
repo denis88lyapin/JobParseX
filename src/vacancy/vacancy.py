@@ -103,7 +103,7 @@ class Vacancy:
 
 
 # if __name__ == '__main__':
-#     data = [{
+#     file_data = [{
 #     "platform": "HeadHunter",
 #     "id": "81651060",
 #     "title": "Заместитель главного бухгалтера",
@@ -137,7 +137,7 @@ class Vacancy:
 #
 #
 #
-#     for b in data:
+#     for b in file_data:
 #         c = Vacancy(b)
 #
 #     print(c.all)
