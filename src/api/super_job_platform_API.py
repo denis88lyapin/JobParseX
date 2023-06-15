@@ -1,8 +1,7 @@
-import json
 import os
 from datetime import datetime
 
-from src.job_platform_API import JobPlatformAPI
+from src.api.job_platform_API import JobPlatformAPI
 import requests
 
 
@@ -44,13 +43,13 @@ class SuperJobPlatformAPI(JobPlatformAPI):
                 print('Ошибка при получении списка вакансий с API SuperJob.ru:', response.text)
                 return None
 
-        filtered_vacancies = self.__filtre_vacancy(vacancies)
+        filtered_vacancies = self.__filter_vacancy(vacancies)
         return filtered_vacancies
 
 
 
     @staticmethod
-    def __filtre_vacancy(vacancy_data: list) -> list:
+    def __filter_vacancy(vacancy_data: list) -> list:
         """
         Функция извлекает и конвертирует данные о вакансиях.
         :param vacancy_data:
@@ -78,9 +77,9 @@ class SuperJobPlatformAPI(JobPlatformAPI):
         return vacancies
 
 
-if __name__ == "__main__":
-    a = SuperJobPlatformAPI()
-    # b = a.get_vacancies(key_word='python')
-    # print(len(b))
-    # print(json.dumps(b, indent=2, ensure_ascii=False))
-    print(json.dumps(a.get_vacancies(key_word='python 100000 Москва'), indent=2, ensure_ascii=False))
+# if __name__ == "__main__":
+#     a = SuperJobPlatformAPI()
+#     # b = a.get_vacancies(key_word='python')
+#     # print(len(b))
+#     # print(json.dumps(b, indent=2, ensure_ascii=False))
+#     print(json.dumps(a.get_vacancies(key_word='python 100000 Москва'), indent=2, ensure_ascii=False))
