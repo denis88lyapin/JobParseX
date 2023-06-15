@@ -22,11 +22,7 @@ class Vacancy:
                 self.vacancy_rich_text = vacancy.get('vacancyRichText', 'нет данных')
                 self.payment = vacancy.get('payment', 'нет данных')
                 date_str = vacancy.get('date_published')
-                if date_str:
-                    self.date_published = datetime.strptime(date_str, '%Y.%m.%d %H:%M:%S')
-                else:
-                    self.date_published = 0
-                if not
+                self.date_published = datetime.strptime(date_str, '%Y.%m.%d %H:%M:%S')
                 self.priority = False
                 Vacancy.all.append(self)
 
@@ -86,14 +82,14 @@ class Vacancy:
         """
         Vacancy.all.sort(key=lambda vacancy: vacancy.date_published, reverse=True)
 
-    def delete_vacancy(self, id):
+    def delete_vacancy(self, vacancy_id):
         """
         Функция удаляет вакансию из списка Vacancy.all на основе указанного идентификатора (id).
         """
         try:
-            if id.isdigit():
+            if vacancy_id.isdigit():
                 vacancy_found = False
-                filtered_vacancies = filter(lambda vacancy: vacancy.id == id, Vacancy.all)
+                filtered_vacancies = filter(lambda vacancy: vacancy.id == vacancy_id, Vacancy.all)
                 for vacancy in filtered_vacancies:
                     Vacancy.all.remove(vacancy)
                     vacancy_found = True
@@ -106,48 +102,48 @@ class Vacancy:
             print(str(error))
 
 
-if __name__ == '__main__':
-    data = [{
-    "platform": "HeadHunter",
-    "id": "81651060",
-    "title": "Заместитель главного бухгалтера",
-    "company": "Ищем работу вместе",
-    "url": "https://hh.ru/vacancy/81651060",
-    "area": "Москва",
-    "address": "",
-    "candidat": "Опыт работы в производственных компаниях. Знание 1С 8.3 <highlighttext>Бухгалтерия</highlighttext>, Управление торговлей, ЗУП, MS Office. Внимательность к деталям, аккуратность...",
-    "vacancyRichText": "Учет сырья, материалов. Ведение производственного учета: создание заказов на производство, списание сырья в производство, выпуск готовой продукции. Проверка производственных и...",
-    "date_published": "2023.06.08 23:41:07",
-    "payment": {
-      "from": 80000,
-      "to": 110000
-    }
-  },
-  {
-    "platform": "HeadHunter",
-    "id": "79718141",
-    "title": "Бухгалтер по расчету заработной платы",
-    "company": "LITOKOL",
-    "url": "https://hh.ru/vacancy/79718141",
-    "area": "Москва",
-    "address": "Москва, проезд Завода Серп и Молот, 6к1",
-    "candidat": "...<highlighttext>Бухгалтерия</highlighttext> 8.3, знаете бухгалтерский учет на участках: банк, расчеты с покупателями, авансовые отчеты. Являетесь уверенным пользователем 1С <highlighttext>Бухгалтерия</highlighttext>...",
-    "vacancyRichText": "Обеспечивать синхронизацию из 1С: ЗУП в 1С: <highlighttext>Бухгалтерия</highlighttext> и проводить операции по заработной плате и иным выплатам на...",
-    "date_published": "2023.05.31 12:20:18",
-    "payment": {
-      "from": 115000,
-      "to": 0
-    }}]
-
-
-
-    for b in data:
-        c = Vacancy(b)
-
-    print(c.all)
-
-    c.delete_vacancy("79718141")
-    print(c.all)
+# if __name__ == '__main__':
+#     data = [{
+#     "platform": "HeadHunter",
+#     "id": "81651060",
+#     "title": "Заместитель главного бухгалтера",
+#     "company": "Ищем работу вместе",
+#     "url": "https://hh.ru/vacancy/81651060",
+#     "area": "Москва",
+#     "address": "",
+#     "candidat": "Опыт работы в производственных компаниях. Знание 1С 8.3 <highlighttext>Бухгалтерия</highlighttext>, Управление торговлей, ЗУП, MS Office. Внимательность к деталям, аккуратность...",
+#     "vacancyRichText": "Учет сырья, материалов. Ведение производственного учета: создание заказов на производство, списание сырья в производство, выпуск готовой продукции. Проверка производственных и...",
+#     "date_published": "2023.06.08 23:41:07",
+#     "payment": {
+#       "from": 80000,
+#       "to": 110000
+#     }
+#   },
+#   {
+#     "platform": "HeadHunter",
+#     "id": "79718141",
+#     "title": "Бухгалтер по расчету заработной платы",
+#     "company": "LITOKOL",
+#     "url": "https://hh.ru/vacancy/79718141",
+#     "area": "Москва",
+#     "address": "Москва, проезд Завода Серп и Молот, 6к1",
+#     "candidat": "...<highlighttext>Бухгалтерия</highlighttext> 8.3, знаете бухгалтерский учет на участках: банк, расчеты с покупателями, авансовые отчеты. Являетесь уверенным пользователем 1С <highlighttext>Бухгалтерия</highlighttext>...",
+#     "vacancyRichText": "Обеспечивать синхронизацию из 1С: ЗУП в 1С: <highlighttext>Бухгалтерия</highlighttext> и проводить операции по заработной плате и иным выплатам на...",
+#     "date_published": "2023.05.31 12:20:18",
+#     "payment": {
+#       "from": 115000,
+#       "to": 0
+#     }}]
+#
+#
+#
+#     for b in data:
+#         c = Vacancy(b)
+#
+#     print(c.all)
+#
+#     c.delete_vacancy("79718141")
+#     print(c.all)
 
 
 
