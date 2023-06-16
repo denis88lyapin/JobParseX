@@ -9,56 +9,80 @@ class JsonJobFile(JobFile):
     Класс для работы с вакансиями в json файле.
     """
     def __init__(self):
-        self.__file_path = os.path.join('', 'data/vacancy.json')
+        self.__file_path = os.path.join('data', 'vacancy.json')
 
     import os
 
-    def add_vacancy(self, vacancy, data_append=False):
+    def add_vacancy(self, vacancy, data_append=False) -> None:
         """
         Функция для записи (добавления) вакансий в файл json. Обработаны исключения:
         - файла нет, нет директории с файлом - создаются заново;
         - файл пустой, но функция работает в режиме добавления.
-        :param vacancy:
-        :param data_append:
-        :return:
         """
         try:
             if not data_append:
-                with open(self.__file_path, "w") as file_path:
-                    data = json.dumps(vacancy, indent=2, ensure_ascii=False)
-                    file_path.write(data)
+                self.__write_file(vacancy)
             else:
-                with open(self.__file_path, "r") as file_path:
-                    load_data = json.load(file_path)
-                with open(self.__file_path, "w") as file_path:
-                    load_data.append(vacancy[0])
-                    write_data = json.dumps(load_data, indent=2, ensure_ascii=False)
-                    file_path.write(write_data)
+                load_data = self.__read_file()
+                for item in vacancy:
+                    load_data.append(item)
+                self.__write_file(load_data)
         except json.JSONDecodeError:
-            with open(self.__file_path, 'w') as file_path:
-                data = json.dumps(vacancy, indent=2, ensure_ascii=False)
-                file_path.write(data)
+            self.__write_file(vacancy)
         except FileNotFoundError:
-            os.makedirs("")
-            with open(self.__file_path, "w") as file_path:
-                data = json.dumps(vacancy, indent=2, ensure_ascii=False)
-                file_path.write(data)
+            os.makedirs("data")
+            self.__write_file(vacancy)
 
-    def get_vacancies(self, search_query):
+    def get_vacancies(self, search_query='') -> list:
+        """
+        Функция для поиска вакансий по ключевым словам.
+        """
         keywords = search_query.lower().split()
         result = []
-
-        with open(self.__file_path, 'r') as file_path:
-            data = json.load(file_path)
-            for vacancy in data:
-                for value in vacancy.values():
-                    if any(keyword in value for keyword in keywords):
-                        result.append(vacancy)
+        data = self.__read_file()
+        self.__search_in_data(data, keywords, result)
         return result
 
-
     def remove_vacancy(self, vacancy_id):
-        pass
+        data = []
+        data_tmp = self.__read_file()
+        for item in data_tmp:
+            if vacancy_id != item["id"]:
+                data.append(item)
+            self.__write_file(data_tmp)
+
+    def __read_file(self):
+        """
+        Функция чтения данных из файла.
+        """
+        with open(self.__file_path, "r") as file:
+            data = json.load(file)
+        return data
+
+    def __write_file(self, data):
+        """
+        Функция записи данных в файл.
+        """
+        with open(self.__file_path, "w") as file:
+            write_data = json.dumps(data, indent=2, ensure_ascii=False)
+            file.write(write_data)
+
+
+    def __search_in_data(self, data, keywords, result):
+        """
+        Рекурсивная функция, для поиска во вложенных данных.
+        """
+        for item in data:
+            if isinstance(item, dict):
+                for key, value in item.items():
+                    if isinstance(value, (str, float, int)):
+                        if any(keyword in str(value).lower() for keyword in keywords):
+                            result.append(item)
+                            break
+                    elif isinstance(value, (dict, list)):
+                        self.__search_in_data([value], keywords, result)
+            elif isinstance(item, list):
+                self.__search_in_data(item, keywords, result)
 
 
 
@@ -97,7 +121,9 @@ if __name__ == "__main__":
       "to": 0
     }}]
 
-    a.add_vacancy(data, True)
-    print(str(a.get_vacancies("бухгалтер")))
+    a = JsonJobFile()
+    a.add_vacancy(data, data_append=True)
+
+    a.remove_vacancy("81651060")
 
 
