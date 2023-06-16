@@ -33,7 +33,7 @@ class JsonJobFile(JobFile):
             os.makedirs("data")
             self.__write_file(vacancy)
 
-    def get_vacancies(self, search_query='') -> list:
+    def get_vacancies(self, search_query: str) -> list:
         """
         Функция для поиска вакансий по ключевым словам.
         """
@@ -43,13 +43,17 @@ class JsonJobFile(JobFile):
         self.__search_in_data(data, keywords, result)
         return result
 
-    def remove_vacancy(self, vacancy_id):
-        data = []
-        data_tmp = self.__read_file()
-        for item in data_tmp:
-            if vacancy_id != item["id"]:
-                data.append(item)
-            self.__write_file(data_tmp)
+    def remove_vacancy(self, vacancy_id: str) -> None:
+        try:
+            data = self.__read_file()
+            data_filtered = [item for item in data if int(item['id']) != int(vacancy_id)]
+            self.__write_file(data_filtered)
+
+
+        except ValueError:
+            print("id вакансии должно быть числом")
+        else:
+            print("Вакансия успешно удалена")
 
     def __read_file(self):
         """
@@ -80,7 +84,7 @@ class JsonJobFile(JobFile):
                             result.append(item)
                             break
                     elif isinstance(value, (dict, list)):
-                        self.__search_in_data([value], keywords, result)
+                        self.__search_in_data(value, keywords, result)
             elif isinstance(item, list):
                 self.__search_in_data(item, keywords, result)
 
@@ -122,8 +126,8 @@ if __name__ == "__main__":
     }}]
 
     a = JsonJobFile()
-    a.add_vacancy(data, data_append=True)
+    a.add_vacancy(data)
 
-    a.remove_vacancy("81651060")
+    a.remove_vacancy("79718141")
 
 
