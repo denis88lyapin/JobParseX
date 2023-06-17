@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from src.api.job_platform_API import JobPlatformAPI
@@ -8,40 +9,32 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
     """
     Класс для работы с API SuperJob.
     """
-    def __init__(self):
+    def __init__(self, key_words) -> None:
+        self.key_words = key_words
         self.base_url = "https://api.hh.ru/vacancies"
+        self.vacancies = []
 
-    def get_vacancies(self, key_word=''):
+    def get_vacancies(self) -> None:
         """
         Функция возвращает вакансии по параметрам поиска.
-        :param key_word:
-        :return: vacancies
         """
-        all_vacancies = []
+        vacancies_tmp = []
         page = 0
-        per_page = 100  # Количество вакансий на каждой странице
         total_pages = 1
-        filtered_vacancies = []
 
         while page < total_pages:
-            params = {
-                'text': key_word,
-                'page': page,
-                'per_page': per_page
-            }
+            params = {'text': self.key_words, 'page': page, 'per_page': 100}
             response = requests.get(self.base_url, params=params)
             if response.status_code == 200:
-                vacancies = response.json()
-
-                all_vacancies.extend(vacancies["items"])
-                total_pages = vacancies['pages']
+                data = response.json()
+                vacancies_tmp.extend(data["items"])
+                total_pages = data['pages']
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
                 return None
-
-            filtered_vacancies = self.__filter_vacancy(all_vacancies)
-        return filtered_vacancies
+            filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
+            self.vacancies.extend(filtered_vacancies)
 
     @staticmethod
     def __filter_vacancy(vacancy_data: list) -> list:
@@ -50,12 +43,11 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         :param vacancy_data:
         :return: vacancy
         """
-
         vacancies = []
         for vacancy in vacancy_data:
             if vacancy['type']['id'] == 'open':
                 address = vacancy['address']
-                address_raw = address['raw'] if address else ""
+                address_raw = address['raw'] if address else None
                 salary = vacancy['salary']
                 salary_from = salary['from'] if salary else 0
                 salary_to = salary['to'] if salary else 0
@@ -78,8 +70,7 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         return vacancies
 
 
-# if __name__ == "__main__":
-#     a = HeadHunterPlatformAPI()
-#     vacancies = a.get_vacancies(key_word='бухгалтер 100000 Москва')
-#     print(len(vacancies))
-#     print(json.dumps(vacancies, indent=2, ensure_ascii=False))
+if __name__ == "__main__":
+    a = HeadHunterPlatformAPI('бухгалтер 100000 Москва')
+    a.get_vacancies()
+    print(a.vacancies)

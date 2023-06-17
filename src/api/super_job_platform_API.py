@@ -12,41 +12,32 @@ class SuperJobPlatformAPI(JobPlatformAPI):
     """
     sj_api_secret_key = os.getenv('SJ_API_SECRET_KEY')
 
-    def __init__(self):
+    def __init__(self, key_words) -> None:
+        self.key_words = key_words
         self.base_url = 'https://api.superjob.ru/2.0/vacancies/'
+        self.headers = {'X-Api-App-Id': self.sj_api_secret_key}
+        self.vacancies = []
 
-    def get_vacancies(self, key_word=''):
+    def get_vacancies(self) -> None:
         """
         Функция возвращает все вакансии по параметрам поиска.
-        :param key_word:
-        :return: vacancies
         """
-        headers = {'X-Api-App-Id': self.sj_api_secret_key}
-        params = {'keyword': key_word, 'page': 0, 'count': 100}
-        vacancies = []
-
+        params = {'keyword': self.key_words, 'page': 0, 'count': 100}
+        vacancies_tmp = []
         while True:
-            response = requests.get(self.base_url, params=params, headers=headers)
-
+            response = requests.get(self.base_url, params=params, headers=self.headers)
             if response.status_code == 200:
                 data = response.json()
-                current_vacancies = data['objects']
-                vacancies.extend(current_vacancies)
-
-
+                vacancies_tmp.extend(data['objects'])
                 more_results = data['more']
                 if not more_results:
                     break
-
                 params['page'] += 1
             else:
                 print('Ошибка при получении списка вакансий с API SuperJob.ru:', response.text)
                 return None
-
-        filtered_vacancies = self.__filter_vacancy(vacancies)
-        return filtered_vacancies
-
-
+            filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
+            self.vacancies.extend(filtered_vacancies)
 
     @staticmethod
     def __filter_vacancy(vacancy_data: list) -> list:
@@ -77,9 +68,7 @@ class SuperJobPlatformAPI(JobPlatformAPI):
         return vacancies
 
 
-# if __name__ == "__main__":
-#     a = SuperJobPlatformAPI()
-#     # b = a.get_vacancies(key_word='python')
-#     # print(len(b))
-#     # print(json.dumps(b, indent=2, ensure_ascii=False))
-#     print(json.dumps(a.get_vacancies(key_word='python 100000 Москва'), indent=2, ensure_ascii=False))
+if __name__ == "__main__":
+    a = SuperJobPlatformAPI("python Москва")
+    a.get_vacancies()
+    print(a.vacancies)
