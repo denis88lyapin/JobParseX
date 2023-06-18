@@ -1,8 +1,6 @@
 import json
 import os
-
 from src.file_data.job_file import JobFile
-
 
 class JsonJobFile(JobFile):
     """
@@ -10,8 +8,6 @@ class JsonJobFile(JobFile):
     """
     def __init__(self):
         self.__file_path = os.path.join('data', 'vacancy.json')
-
-    import os
 
     def add_vacancy(self, vacancy, data_append=False) -> None:
         """
@@ -48,8 +44,6 @@ class JsonJobFile(JobFile):
             data = self.__read_file()
             data_filtered = [item for item in data if int(item['id']) != int(vacancy_id)]
             self.__write_file(data_filtered)
-
-
         except ValueError:
             print("id вакансии должно быть числом")
         else:
@@ -71,14 +65,13 @@ class JsonJobFile(JobFile):
             write_data = json.dumps(data, indent=2, ensure_ascii=False)
             file.write(write_data)
 
-
     def __search_in_data(self, data, keywords, result):
         """
         Рекурсивная функция, для поиска во вложенных данных.
         """
         for item in data:
             if isinstance(item, dict):
-                for key, value in item.items():
+                for value in item.values():
                     if isinstance(value, (str, float, int)):
                         if any(keyword in str(value).lower() for keyword in keywords):
                             result.append(item)
@@ -90,44 +83,45 @@ class JsonJobFile(JobFile):
 
 
 
-if __name__ == "__main__":
-    a = JsonJobFile()
 
-    data = [{
-    "platform": "HeadHunter",
-    "id": "81651060",
-    "title": "Заместитель главного бухгалтера",
-    "company": "Ищем работу вместе",
-    "url": "https://hh.ru/vacancy/81651060",
-    "area": "Москва",
-    "address": "",
-    "candidat": "Опыт работы в производственных компаниях. Знание 1С 8.3 <highlighttext>Бухгалтерия</highlighttext>, Управление торговлей, ЗУП, MS Office. Внимательность к деталям, аккуратность...",
-    "vacancyRichText": "Учет сырья, материалов. Ведение производственного учета: создание заказов на производство, списание сырья в производство, выпуск готовой продукции. Проверка производственных и...",
-    "date_published": "2023.06.08 23:41:07",
-    "payment": {
-      "from": 80000,
-      "to": 110000
-    }
-  },
-  {
-    "platform": "HeadHunter",
-    "id": "79718141",
-    "title": "Бухгалтер по расчету заработной платы",
-    "company": "LITOKOL",
-    "url": "https://hh.ru/vacancy/79718141",
-    "area": "Москва",
-    "address": "Москва, проезд Завода Серп и Молот, 6к1",
-    "candidat": "...<highlighttext>Бухгалтерия</highlighttext> 8.3, знаете бухгалтерский учет на участках: банк, расчеты с покупателями, авансовые отчеты. Являетесь уверенным пользователем 1С <highlighttext>Бухгалтерия</highlighttext>...",
-    "vacancyRichText": "Обеспечивать синхронизацию из 1С: ЗУП в 1С: <highlighttext>Бухгалтерия</highlighttext> и проводить операции по заработной плате и иным выплатам на...",
-    "date_published": "2023.05.31 12:20:18",
-    "payment": {
-      "from": 115000,
-      "to": 0
-    }}]
-
-    a = JsonJobFile()
-    a.add_vacancy(data)
-
-    a.remove_vacancy("79718141")
+# if __name__ == "__main__":
+#     a = JsonJobFile()
+#
+#     data = [{
+#     "platform": "HeadHunter",
+#     "id": "81651060",
+#     "title": "Заместитель главного бухгалтера",
+#     "company": "Ищем работу вместе",
+#     "url": "https://hh.ru/vacancy/81651060",
+#     "area": "Москва",
+#     "address": "",
+#     "candidat": "Опыт работы в производственных компаниях. Знание 1С 8.3 <highlighttext>Бухгалтерия</highlighttext>, Управление торговлей, ЗУП, MS Office. Внимательность к деталям, аккуратность...",
+#     "vacancyRichText": "Учет сырья, материалов. Ведение производственного учета: создание заказов на производство, списание сырья в производство, выпуск готовой продукции. Проверка производственных и...",
+#     "date_published": "2023.06.08 23:41:07",
+#     "payment": {
+#       "from": 80000,
+#       "to": 110000
+#     }
+#   },
+#   {
+#     "platform": "HeadHunter",
+#     "id": "79718141",
+#     "title": "Бухгалтер по расчету заработной платы",
+#     "company": "LITOKOL",
+#     "url": "https://hh.ru/vacancy/79718141",
+#     "area": "Москва",
+#     "address": "Москва, проезд Завода Серп и Молот, 6к1",
+#     "candidat": "...<highlighttext>Бухгалтерия</highlighttext> 8.3, знаете бухгалтерский учет на участках: банк, расчеты с покупателями, авансовые отчеты. Являетесь уверенным пользователем 1С <highlighttext>Бухгалтерия</highlighttext>...",
+#     "vacancyRichText": "Обеспечивать синхронизацию из 1С: ЗУП в 1С: <highlighttext>Бухгалтерия</highlighttext> и проводить операции по заработной плате и иным выплатам на...",
+#     "date_published": "2023.05.31 12:20:18",
+#     "payment": {
+#       "from": 115000,
+#       "to": 0
+#     }}]
+#
+#     a = JsonJobFile()
+#     a.add_vacancy(data)
+#
+#     a.remove_vacancy("79718141")
 
 
