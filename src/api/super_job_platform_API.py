@@ -9,8 +9,8 @@ class SuperJobPlatformAPI:
     """
     sj_api_secret_key = os.getenv('SJ_API_SECRET_KEY')
 
-    def __init__(self, key_words):
-        self.key_words = key_words
+    def __init__(self, keywords):
+        self.keywords = keywords
         self.base_url = 'https://api.superjob.ru/2.0/vacancies/'
         self.headers = {'X-Api-App-Id': self.sj_api_secret_key}
         self.vacancies = []
@@ -19,11 +19,12 @@ class SuperJobPlatformAPI:
         """
         Функция возвращает все вакансии по параметрам поиска.
         """
-        params = {'keyword': self.key_words, 'page': 0, 'count': 100}
+        params = {'keyword': self.keywords, 'page': 0, 'count': 100}
         vacancies_tmp = []
         while True:
             response = requests.get(self.base_url, params=params, headers=self.headers)
             if response.status_code == 200:
+                print(f'{self.__class__.__name__} загрузкака страницы {params["page"]}')
                 data = response.json()
                 vacancies_tmp.extend(data['objects'])
                 more_results = data['more']
@@ -65,8 +66,8 @@ class SuperJobPlatformAPI:
         return vacancies
 
 
-if __name__ == "__main__":
-    a = SuperJobPlatformAPI("бухгалтер Москва")
-    a.get_vacancies()
-    print(a.vacancies)
+# if __name__ == "__main__":
+#     a = SuperJobPlatformAPI("бухгалтер Москва")
+#     a.get_vacancies()
+#     print(a.vacancies)
 

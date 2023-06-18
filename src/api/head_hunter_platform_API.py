@@ -7,8 +7,8 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
     """
     Класс для работы с API SuperJob.
     """
-    def __init__(self, key_words) -> None:
-        self.key_words = key_words
+    def __init__(self, keywords) -> None:
+        self.keywords = keywords
         self.base_url = "https://api.hh.ru/vacancies"
         self.vacancies = []
 
@@ -21,9 +21,10 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         total_pages = 1
 
         while page < total_pages:
-            params = {'text': self.key_words, 'page': page, 'per_page': 100}
+            params = {'text': self.keywords, 'page': page, 'per_page': 100}
             response = requests.get(self.base_url, params=params)
             if response.status_code == 200:
+                print(f'{self.__class__.__name__} загрузкака страницы {page}')
                 data = response.json()
                 vacancies_tmp.extend(data["items"])
                 total_pages = data['pages']
