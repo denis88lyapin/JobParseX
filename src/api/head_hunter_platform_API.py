@@ -1,6 +1,4 @@
-import json
 from datetime import datetime
-
 from src.api.job_platform_API import JobPlatformAPI
 import requests
 
@@ -32,7 +30,6 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
-                return None
             filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
             self.vacancies.extend(filtered_vacancies)
 

@@ -1,24 +1,21 @@
 import os
 from datetime import datetime
-
-from src.api.job_platform_API import JobPlatformAPI
 import requests
 
-
-class SuperJobPlatformAPI(JobPlatformAPI):
+class SuperJobPlatformAPI:
     """
     Класс для работы с API SuperJob. Максимальное количество
     вакансий - 500 (ограничение API)
     """
     sj_api_secret_key = os.getenv('SJ_API_SECRET_KEY')
 
-    def __init__(self, key_words) -> None:
+    def __init__(self, key_words):
         self.key_words = key_words
         self.base_url = 'https://api.superjob.ru/2.0/vacancies/'
         self.headers = {'X-Api-App-Id': self.sj_api_secret_key}
         self.vacancies = []
 
-    def get_vacancies(self) -> None:
+    def get_vacancies(self):
         """
         Функция возвращает все вакансии по параметрам поиска.
         """
@@ -35,12 +32,11 @@ class SuperJobPlatformAPI(JobPlatformAPI):
                 params['page'] += 1
             else:
                 print('Ошибка при получении списка вакансий с API SuperJob.ru:', response.text)
-                return None
-            filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
-            self.vacancies.extend(filtered_vacancies)
+        filtered_vacancies = self._filter_vacancy(vacancies_tmp)
+        self.vacancies.extend(filtered_vacancies)
 
     @staticmethod
-    def __filter_vacancy(vacancy_data: list) -> list:
+    def _filter_vacancy(vacancy_data):
         """
         Функция извлекает и конвертирует данные о вакансиях.
         :param vacancy_data:
@@ -65,10 +61,12 @@ class SuperJobPlatformAPI(JobPlatformAPI):
                     'payment': {'from': vacancy['payment_from'], 'to': vacancy['payment_to']}
                 }
                 vacancies.append(processed_vacancy)
+
         return vacancies
 
 
 if __name__ == "__main__":
-    a = SuperJobPlatformAPI("python Москва")
+    a = SuperJobPlatformAPI("бухгалтер Москва")
     a.get_vacancies()
     print(a.vacancies)
+
