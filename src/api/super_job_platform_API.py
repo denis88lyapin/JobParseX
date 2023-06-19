@@ -48,6 +48,8 @@ class SuperJobPlatformAPI:
             if not vacancy["is_closed"]:
                 datetime_obj = datetime.fromtimestamp(vacancy['date_published'])
                 formatted_date = datetime_obj.strftime("%Y.%m.%d %H:%M:%S")
+                payment_from = vacancy['payment_from'] if vacancy['payment_from'] is not None else 0
+                payment_to = vacancy['payment_to'] if vacancy['payment_to'] is not None else 0
                 processed_vacancy = {
                     'platform': "SuperJob",
                     "id": vacancy["id"],
@@ -59,15 +61,8 @@ class SuperJobPlatformAPI:
                     'candidat': vacancy['candidat'],
                     'vacancyRichText': vacancy['vacancyRichText'],
                     'date_published': formatted_date,
-                    'payment': {'from': vacancy['payment_from'], 'to': vacancy['payment_to']}
+                    'payment': {'from': payment_from, 'to': payment_to, 'currency': vacancy["currency"]}
                 }
                 vacancies.append(processed_vacancy)
 
         return vacancies
-
-
-# if __name__ == "__main__":
-#     a = SuperJobPlatformAPI("бухгалтер Москва")
-#     a.get_vacancies()
-#     print(a.vacancies)
-

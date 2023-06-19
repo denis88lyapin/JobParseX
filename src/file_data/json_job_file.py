@@ -73,55 +73,10 @@ class JsonJobFile(JobFile):
             if isinstance(item, dict):
                 for value in item.values():
                     if isinstance(value, (str, float, int)):
-                        if any(keyword in str(value).lower() for keyword in keywords):
+                        if all(keyword in str(value).lower() for keyword in keywords):
                             result.append(item)
                             break
                     elif isinstance(value, (dict, list)):
                         self.__search_in_data(value, keywords, result)
             elif isinstance(item, list):
                 self.__search_in_data(item, keywords, result)
-
-
-
-
-# if __name__ == "__main__":
-#     a = JsonJobFile()
-#
-#     data = [{
-#     "platform": "HeadHunter",
-#     "id": "81651060",
-#     "title": "Заместитель главного бухгалтера",
-#     "company": "Ищем работу вместе",
-#     "url": "https://hh.ru/vacancy/81651060",
-#     "area": "Москва",
-#     "address": "",
-#     "candidat": "Опыт работы в производственных компаниях. Знание 1С 8.3 <highlighttext>Бухгалтерия</highlighttext>, Управление торговлей, ЗУП, MS Office. Внимательность к деталям, аккуратность...",
-#     "vacancyRichText": "Учет сырья, материалов. Ведение производственного учета: создание заказов на производство, списание сырья в производство, выпуск готовой продукции. Проверка производственных и...",
-#     "date_published": "2023.06.08 23:41:07",
-#     "payment": {
-#       "from": 80000,
-#       "to": 110000
-#     }
-#   },
-#   {
-#     "platform": "HeadHunter",
-#     "id": "79718141",
-#     "title": "Бухгалтер по расчету заработной платы",
-#     "company": "LITOKOL",
-#     "url": "https://hh.ru/vacancy/79718141",
-#     "area": "Москва",
-#     "address": "Москва, проезд Завода Серп и Молот, 6к1",
-#     "candidat": "...<highlighttext>Бухгалтерия</highlighttext> 8.3, знаете бухгалтерский учет на участках: банк, расчеты с покупателями, авансовые отчеты. Являетесь уверенным пользователем 1С <highlighttext>Бухгалтерия</highlighttext>...",
-#     "vacancyRichText": "Обеспечивать синхронизацию из 1С: ЗУП в 1С: <highlighttext>Бухгалтерия</highlighttext> и проводить операции по заработной плате и иным выплатам на...",
-#     "date_published": "2023.05.31 12:20:18",
-#     "payment": {
-#       "from": 115000,
-#       "to": 0
-#     }}]
-#
-#     a = JsonJobFile()
-#     a.add_vacancy(data)
-#
-#     a.remove_vacancy("79718141")
-
-

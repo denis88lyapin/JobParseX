@@ -1,0 +1,2 @@
+class JobParseXNoObjectError(Exception):
+    pass

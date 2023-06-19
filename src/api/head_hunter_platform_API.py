@@ -26,8 +26,11 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
             if response.status_code == 200:
                 print(f'{self.__class__.__name__} загрузкака страницы {page}')
                 data = response.json()
+                print('запись данных')
                 vacancies_tmp.extend(data["items"])
+                print("добавление данных")
                 total_pages = data['pages']
+                print("смена страницы")
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
@@ -47,8 +50,14 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 address = vacancy['address']
                 address_raw = address['raw'] if address else None
                 salary = vacancy['salary']
-                salary_from = salary['from'] if salary else 0
-                salary_to = salary['to'] if salary else 0
+                if salary:
+                    salary_from = salary['from'] if salary['from'] is not None else 0
+                    salary_to = salary['to'] if salary['to'] is not None else 0
+                    currency = salary['currency'] if salary['currency'] is not None else "RUR"
+                else:
+                    salary_from = 0
+                    salary_to = 0
+                    currency = "RUR"
                 datetime_obj = datetime.strptime(vacancy['published_at'], "%Y-%m-%dT%H:%M:%S%z")
                 formatted_date = datetime_obj.strftime("%Y.%m.%d %H:%M:%S")
                 processed_vacancy = {
@@ -62,13 +71,7 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                     'candidat': vacancy['snippet']['requirement'],
                     'vacancyRichText': vacancy['snippet']['responsibility'],
                     'date_published': formatted_date,
-                    'payment': {'from': salary_from, 'to': salary_to}
+                    'payment': {'from': salary_from, 'to': salary_to, 'currency': currency}
                 }
                 vacancies.append(processed_vacancy)
         return vacancies
-
-
-if __name__ == "__main__":
-    a = HeadHunterPlatformAPI('бухгалтер 100000 Москва')
-    a.get_vacancies()
-    print(a.vacancies)
