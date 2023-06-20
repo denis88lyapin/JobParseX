@@ -6,7 +6,7 @@ class JsonJobFile(JobFile):
     """
     Класс для работы с вакансиями в json файле.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self.__file_path = os.path.join('data', 'vacancy.json')
 
     def add_vacancy(self, vacancy, data_append=False) -> None:
@@ -47,7 +47,7 @@ class JsonJobFile(JobFile):
         except ValueError:
             print("id вакансии должно быть числом")
         else:
-            print("Вакансия успешно удалена")
+            print("Вакансия успешно удалена из базы данных")
 
     def __read_file(self):
         """
@@ -73,7 +73,7 @@ class JsonJobFile(JobFile):
             if isinstance(item, dict):
                 for value in item.values():
                     if isinstance(value, (str, float, int)):
-                        if all(keyword in str(value).lower() for keyword in keywords):
+                        if any(keyword in str(value).lower() for keyword in keywords):
                             result.append(item)
                             break
                     elif isinstance(value, (dict, list)):

@@ -5,11 +5,11 @@ import requests
 
 class HeadHunterPlatformAPI(JobPlatformAPI):
     """
-    Класс для работы с API SuperJob.
+    Класс для работы с API HeadHunter.
     """
     def __init__(self, keywords) -> None:
-        self.keywords = keywords
-        self.base_url = "https://api.hh.ru/vacancies"
+        self.__keywords = keywords
+        self.__base_url = "https://api.hh.ru/vacancies"
         self.vacancies = []
 
     def get_vacancies(self) -> None:
@@ -21,16 +21,13 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         total_pages = 1
 
         while page < total_pages:
-            params = {'text': self.keywords, 'page': page, 'per_page': 100}
-            response = requests.get(self.base_url, params=params)
+            params = {'text': self.__keywords, 'page': page, 'per_page': 100}
+            response = requests.get(self.__base_url, params=params)
             if response.status_code == 200:
                 print(f'{self.__class__.__name__} загрузкака страницы {page}')
                 data = response.json()
-                print('запись данных')
                 vacancies_tmp.extend(data["items"])
-                print("добавление данных")
                 total_pages = data['pages']
-                print("смена страницы")
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)

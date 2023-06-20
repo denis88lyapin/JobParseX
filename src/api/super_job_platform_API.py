@@ -2,27 +2,27 @@ import os
 from datetime import datetime
 import requests
 
+
 class SuperJobPlatformAPI:
     """
-    Класс для работы с API SuperJob. Максимальное количество
-    вакансий - 500 (ограничение API)
+    Класс для работы с API SuperJob.
     """
     sj_api_secret_key = os.getenv('SJ_API_SECRET_KEY')
 
-    def __init__(self, keywords):
-        self.keywords = keywords
-        self.base_url = 'https://api.superjob.ru/2.0/vacancies/'
-        self.headers = {'X-Api-App-Id': self.sj_api_secret_key}
+    def __init__(self, keywords) -> None:
+        self.__keywords = keywords
+        self.__base_url = 'https://api.superjob.ru/2.0/vacancies/'
+        self.__headers = {'X-Api-App-Id': self.sj_api_secret_key}
         self.vacancies = []
 
-    def get_vacancies(self):
+    def get_vacancies(self) -> None:
         """
         Функция возвращает все вакансии по параметрам поиска.
         """
-        params = {'keyword': self.keywords, 'page': 0, 'count': 100}
+        params = {'keyword': self.__keywords, 'page': 0, 'count': 100}
         vacancies_tmp = []
         while True:
-            response = requests.get(self.base_url, params=params, headers=self.headers)
+            response = requests.get(self.__base_url, params=params, headers=self.__headers)
             if response.status_code == 200:
                 print(f'{self.__class__.__name__} загрузкака страницы {params["page"]}')
                 data = response.json()
@@ -33,11 +33,11 @@ class SuperJobPlatformAPI:
                 params['page'] += 1
             else:
                 print('Ошибка при получении списка вакансий с API SuperJob.ru:', response.text)
-        filtered_vacancies = self._filter_vacancy(vacancies_tmp)
+        filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
         self.vacancies.extend(filtered_vacancies)
 
     @staticmethod
-    def _filter_vacancy(vacancy_data):
+    def __filter_vacancy(vacancy_data: list) -> list:
         """
         Функция извлекает и конвертирует данные о вакансиях.
         :param vacancy_data:
