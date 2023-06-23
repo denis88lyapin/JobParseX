@@ -7,10 +7,12 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
     """
     Класс для работы с API HeadHunter.
     """
-    def __init__(self, keywords) -> None:
+    def __init__(self, keywords, town=None) -> None:
         self.__keywords = keywords
+        self.__town = town
         self.__base_url = "https://api.hh.ru/vacancies"
         self.vacancies = []
+        self.__town_id = self.__get_area_id()
 
     def get_vacancies(self) -> None:
         """
@@ -21,7 +23,7 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
         total_pages = 1
 
         while page < total_pages:
-            params = {'text': self.__keywords, 'page': page, 'per_page': 100}
+            params = {'text': self.__keywords, 'area': self.__town_id, 'page': page, 'per_page': 100}
             response = requests.get(self.__base_url, params=params)
             if response.status_code == 200:
                 print(f'{self.__class__.__name__} загрузкака страницы {page}')
@@ -31,8 +33,24 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 page += 1
             else:
                 print('Ошибка при получении списка вакансий с HeadHunter.ru:', response.text)
+                break
             filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
             self.vacancies.extend(filtered_vacancies)
+
+    def __get_area_id(self):
+        areas = requests.get(url="https://api.hh.ru/areas").json()
+        area_id = None
+        for area in areas[0]['areas']:
+            if self.__town.title() == area["name"]:
+                area_id = area["id"]
+
+            for town in area['areas']:
+                if self.__town.title() == town["name"]:
+                    area_id = town["id"]
+
+        return area_id
+
+
 
     @staticmethod
     def __filter_vacancy(vacancy_data: list) -> list:
@@ -72,3 +90,9 @@ class HeadHunterPlatformAPI(JobPlatformAPI):
                 }
                 vacancies.append(processed_vacancy)
         return vacancies
+
+if __name__ == "__main__":
+    a = HeadHunterPlatformAPI(keywords="Бухгалтер", town="Химки")
+    a.get_vacancies()
+    c = a.vacancies
+    print(c)

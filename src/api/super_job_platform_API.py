@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 import requests
@@ -9,8 +10,10 @@ class SuperJobPlatformAPI:
     """
     sj_api_secret_key = os.getenv('SJ_API_SECRET_KEY')
 
-    def __init__(self, keywords) -> None:
+    def __init__(self, keywords, town) -> None:
         self.__keywords = keywords
+        self.__town = town
+        self.area_id = self.__get_area_id()
         self.__base_url = 'https://api.superjob.ru/2.0/vacancies/'
         self.__headers = {'X-Api-App-Id': self.sj_api_secret_key}
         self.vacancies = []
@@ -19,7 +22,7 @@ class SuperJobPlatformAPI:
         """
         Функция возвращает все вакансии по параметрам поиска.
         """
-        params = {'keyword': self.__keywords, 'page': 0, 'count': 100}
+        params = {'keyword': self.__keywords, 'town': self.area_id, 'page': 0, 'count': 100}
         vacancies_tmp = []
         while True:
             response = requests.get(self.__base_url, params=params, headers=self.__headers)
@@ -33,6 +36,7 @@ class SuperJobPlatformAPI:
                 params['page'] += 1
             else:
                 print('Ошибка при получении списка вакансий с API SuperJob.ru:', response.text)
+                break
         filtered_vacancies = self.__filter_vacancy(vacancies_tmp)
         self.vacancies.extend(filtered_vacancies)
 
@@ -66,3 +70,29 @@ class SuperJobPlatformAPI:
                 vacancies.append(processed_vacancy)
 
         return vacancies
+
+    def __get_area_id(self):
+        areas = requests.get(url="https://api.superjob.ru/2.0/regions/combined/").json()
+        area_id = None
+        found_town = None
+
+        for area in areas:
+            if 'title' in area and area['title'] == self.__town.title():
+                found_town = area["id"]
+                break
+
+            for town in area.get('towns', []):
+                if 'title' in town and town["title"] == self.__town.title():
+                    found_town = town["id"]
+                    break
+
+            if found_town:
+                break
+
+        return found_town
+
+if __name__ == "__main__":
+    a = SuperJobPlatformAPI(keywords="Бухгалтер", town="Алабино")
+    a.get_vacancies()
+    c = a.vacancies
+    print(json.dumps(c))

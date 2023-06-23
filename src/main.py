@@ -59,14 +59,17 @@ class Page1:
                 command = int(input().strip())
                 if command == 1:
                     keywords = input("Введите поисковый запрос: ")
-                    self.search_vacancies(self.apis[0](keywords=keywords))
+                    town = input("Введите город или нажмите Enter (пропустить): ")
+                    self.search_vacancies(self.apis[0](keywords=keywords, town=town))
                 elif command == 2:
                     keywords = input("Введите поисковый запрос: ")
-                    self.search_vacancies(self.apis[1](keywords=keywords))
+                    town = input("Введите город или нажмите Enter (пропустить): ")
+                    self.search_vacancies(self.apis[1](keywords=keywords, town=town))
                 elif command == 3:
                     keywords = input("Введите поисковый запрос: ")
+                    town = input("Введите город или нажмите Enter (пропустить): ")
                     for api in self.apis:
-                        self.search_vacancies(api(keywords=keywords))
+                        self.search_vacancies(api(keywords=keywords, town=town))
                 elif command == 0:
                     return
                 else:
